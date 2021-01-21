@@ -10,6 +10,15 @@ public class MetricsAgentApplication {
         }
 
         IAgentConfig startupConfig = getStartupParameters(IAgentConfig.class);
+        new MetricsAgentApplication().start(startupConfig);
+
+    }
+
+    public void start(IAgentConfig aConfig) {
+
+    }
+
+    public void shutdown() {
 
     }
 }

@@ -4,9 +4,9 @@
     <packaging>jar</packaging>
 
     <groupId>com.payneteasy.metrics-bridge</groupId>
-    <artifactId>metrics-agent</artifactId>
+    <artifactId>metrics-server</artifactId>
 
-    <name>Agent ${project.version}</name>
+    <name>Server ${project.version}</name>
 
     <parent>
         <groupId>com.payneteasy</groupId>
@@ -29,6 +29,11 @@
         <dependency>
             <groupId>com.payneteasy.http-client</groupId>
             <artifactId>http-client-impl</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.payneteasy.http-server</groupId>
+            <artifactId>http-server-impl</artifactId>
         </dependency>
 
         <dependency>

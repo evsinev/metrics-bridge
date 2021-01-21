@@ -1,4 +1,4 @@
-package com.payneteasy.metrics.bridge.agent.api.messages;
+package com.payneteasy.metrics.bridge.agent.api.polling.messages;
 
 import lombok.Data;
 

@@ -1,13 +1,13 @@
-package com.payneteasy.metrics.bridge.agent.api.exception;
+package com.payneteasy.metrics.bridge.agent.api.remote.exception;
 
-public enum AgentProblemType {
+public enum AgentRemoteProblemType {
 
     FORBIDDEN(403, "Wrong auth token");
 
     private final int    status;
     private final String title;
 
-    AgentProblemType(int status, String title) {
+    AgentRemoteProblemType(int status, String title) {
         this.status = status;
         this.title = title;
     }
