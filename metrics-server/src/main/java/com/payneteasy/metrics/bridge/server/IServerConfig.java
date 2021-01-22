@@ -13,4 +13,6 @@ public interface IServerConfig {
     @AStartupParameter(name = "PROMETHEUS_PORT", value = "8081")
     int getPrometheusWebServerPort();
 
+    @AStartupParameter(name = "PROMETHEUS_KEY_LIFETIME_MS", value = "20000")
+    int getPrometheusKeyLifetimeMs();
 }

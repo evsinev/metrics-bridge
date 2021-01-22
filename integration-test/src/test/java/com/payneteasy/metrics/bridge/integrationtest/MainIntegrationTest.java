@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static com.payneteasy.startup.parameters.StartupParametersFactory.getStartupParameters;
 
@@ -34,6 +35,9 @@ public class MainIntegrationTest {
         MetricsServerApplication server       = new MetricsServerApplication();
         server.start(serverConfig);
 
+        waitForPort(8080);
+        waitForPort(8081);
+
         try {
             MetricsAgentApplication agent       = new MetricsAgentApplication();
             IAgentConfig            agentConfig = getStartupParameters(IAgentConfig.class);
@@ -42,9 +46,9 @@ public class MainIntegrationTest {
             try {
                 SampleMetricsServer metrics = new SampleMetricsServer();
                 metrics.start(8082);
+                waitForPort(8082);
 
                 try {
-                    waitForAllPorts();
                     fetchMetrics();
                 } finally {
                     metrics.shutdown();
@@ -57,18 +61,12 @@ public class MainIntegrationTest {
         }
 
     }
-
-    private void waitForAllPorts() throws InterruptedException {
-        waitForPort(8080);
-        waitForPort(8081);
-        waitForPort(8082);
-    }
-
+    
     private void waitForPort(int aPort) throws InterruptedException {
         LOG.debug("Waiting for port ...", "port", aPort);
         HttpRequest request = HttpRequest.builder()
                 .method(HttpMethod.GET)
-                .url("http://localhost:" + aPort + "/metrics")
+                .url("http://localhost:" + aPort + "/health")
                 .build();
 
         long endTime = System.currentTimeMillis() + 10_000;
@@ -85,11 +83,19 @@ public class MainIntegrationTest {
     }
 
     private void fetchMetrics() throws HttpConnectException, HttpReadException, HttpWriteException {
+        HttpHeaders headers = new HttpHeaders(
+                Arrays.asList(
+                          new HttpHeader("User-Agent", "Prometheus 1.2.3")
+                        , new HttpHeader("Accept"    , "application/openmetrics-text")
+                        , new HttpHeader("x-prometheus-scrape-timeout-seconds"    , "3.000"))
+        );
         HttpRequest request = HttpRequest.builder()
                 .method(HttpMethod.GET)
                 .url("http://localhost:8081/metrics?host=127.0.0.1&port=8082")
+                .headers(headers)
                 .build();
         HttpResponse response = client.send(request, params);
+        Assert.assertEquals("OK", response.getReasonPhrase());
         Assert.assertEquals(200, response.getStatusCode());
         Assert.assertEquals("# HELP paynet_executor_flow Executor flow-\n" +
                 "# TYPE paynet_executor_flow gauge\n" +

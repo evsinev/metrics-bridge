@@ -46,7 +46,7 @@ public class JsonMethodInvoker<Q, R, X extends Throwable> {
             throw optionalError.get();
         }
 
-        return gson.fromJson(new InputStreamReader(new ByteArrayInputStream(response.getBody()), UTF_8), responseClass);
+        return gson.fromJson(new String(response.getBody(), UTF_8), responseClass);
     }
 
     private HttpResponse sendRequest(HttpRequestParameters aParams, HttpRequest request) throws X {

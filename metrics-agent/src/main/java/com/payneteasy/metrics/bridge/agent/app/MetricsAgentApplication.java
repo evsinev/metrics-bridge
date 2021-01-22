@@ -1,5 +1,12 @@
 package com.payneteasy.metrics.bridge.agent.app;
 
+import com.google.gson.Gson;
+import com.payneteasy.http.client.impl.HttpClientImpl;
+import com.payneteasy.metrics.bridge.agent.api.polling.exception.AgentPollingException;
+import com.payneteasy.metrics.bridge.agent.api.polling.messages.AgentPollingRequest;
+import com.payneteasy.metrics.bridge.agent.api.polling.messages.AgentPollingResponse;
+import com.payneteasy.metrics.bridge.agent.app.client.polling.AgentPollingClient;
+
 import static com.payneteasy.startup.parameters.StartupParametersFactory.getStartupParameters;
 
 public class MetricsAgentApplication {
@@ -15,8 +22,26 @@ public class MetricsAgentApplication {
     }
 
     public void start(IAgentConfig aConfig) {
+        AgentPollingClient client = new AgentPollingClient(
+                aConfig.getMetricsServerUrl()
+                , new HttpClientImpl()
+                , aConfig.getAgentId()
+                , aConfig.getConnectionTimeoutMs()
+                , aConfig.getPollingTimeoutMs()
+                , new Gson()
+        );
 
+        new Thread(() -> {
+            while(!Thread.currentThread().isInterrupted()) {
+                try {
+                    AgentPollingResponse response = client.poll(new AgentPollingRequest(System.currentTimeMillis(), aConfig.getAgentId(), aConfig.getPollingTimeoutMs()));
+                } catch (AgentPollingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
+
 
     public void shutdown() {
 
