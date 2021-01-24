@@ -78,7 +78,7 @@
                                     <transformers>
                                         <transformer
                                             implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                            <mainClass>com.payneteasy.metrics.bridge.agent.app.MetricsAgentApplication</mainClass>
+                                            <mainClass>com.payneteasy.metrics.bridge.server.MetricsServerApplication</mainClass>
                                         </transformer>
                                     </transformers>
 

@@ -1,0 +1,6 @@
+[
+{
+  "name":"com.payneteasy.metrics.bridge.server.IServerConfig",
+  "allPublicMethods":true
+}
+]
