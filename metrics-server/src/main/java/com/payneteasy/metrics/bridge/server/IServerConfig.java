@@ -7,6 +7,9 @@ public interface IServerConfig {
     @AStartupParameter(name = "AGENTS_PORT", value = "8080")
     int getAgentWebServerPort();
 
+    @AStartupParameter(name = "AGENTS_WEB_CONTEXT", value = "/")
+    String getAgentWebContextServerPort();
+
     @AStartupParameter(name = "AGENTS_POLLING_TIMEOUT_MS", value = "60000")
     int getAgentsPollingTimeoutMs();
 
@@ -15,4 +18,7 @@ public interface IServerConfig {
 
     @AStartupParameter(name = "PROMETHEUS_KEY_LIFETIME_MS", value = "20000")
     int getPrometheusKeyLifetimeMs();
+
+    @AStartupParameter(name = "PROMETHEUS_WEB_CONTEXT", value = "/")
+    String getPrometheusWebContextServerPort();
 }

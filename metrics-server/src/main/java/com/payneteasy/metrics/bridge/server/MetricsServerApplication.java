@@ -45,7 +45,7 @@ public class MetricsServerApplication {
         ITargetRequestSender       targetRequestSender = new TargetRequestSenderAgentImpl(targetRequestQueue);
         ITargetFinder              targetFinder        = new TargetFinderImpl(targetRequestSender, aConfig.getPrometheusKeyLifetimeMs());
         AgentPollingServiceImpl    agentPollingService = new AgentPollingServiceImpl(targetRequestQueue, 60_000);
-        HttpServer                 agentsWebServer     = createAgentsWebServer(aConfig, agentPollingService);
+        HttpServer                 agentsWebServer     = createAgentsWebServer(aConfig, agentPollingService, targetFinder);
         HttpServer                 prometheusWebServer = createPrometheusWebServer(aConfig, targetFinder);
 
         startWebServer(agentsWebServer, "agents-web-server");
@@ -60,12 +60,12 @@ public class MetricsServerApplication {
         Runtime.getRuntime().addShutdownHook(new Thread(aServer::stop));
     }
 
-    private HttpServer createAgentsWebServer(IServerConfig aConfig, AgentPollingServiceImpl aAgentService) throws IOException {
+    private HttpServer createAgentsWebServer(IServerConfig aConfig, AgentPollingServiceImpl aAgentService, ITargetFinder targetFinder) throws IOException {
         return new HttpServer(
                 new InetSocketAddress(aConfig.getAgentWebServerPort())
                 , new HttpLoggerSystemOut()
                 , Executors.newCachedThreadPool()
-                , new AgentsHttpRequestHandler(aAgentService)
+                , new AgentsHttpRequestHandler(aAgentService, targetFinder, aConfig.getAgentWebContextServerPort())
                 , 10_000
         );
     }
