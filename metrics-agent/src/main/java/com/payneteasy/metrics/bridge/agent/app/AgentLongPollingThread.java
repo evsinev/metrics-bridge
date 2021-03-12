@@ -29,15 +29,22 @@ public class AgentLongPollingThread extends Thread {
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 AgentPollingResponse     response     = client.poll(new AgentPollingRequest(System.currentTimeMillis(), agentId, longPollingTimeoutMs));
+
+                System.out.println("response = " + response);
+
                 AgentFetchMetricsCommand fetchCommand = response.getFetchCommand();
+                System.out.println("fetchCommand = " + fetchCommand);
 
                 if (fetchCommand == null) {
                     continue;
                 }
 
                 TargetFetchRequest targetRequest = new TargetFetchRequest(fetchCommand.getTargetTcpPort(), fetchCommand.getTargetConnectionTimeoutMs(), fetchCommand.getTargetReadTimeoutMs());
+                System.out.println("targetRequest = " + targetRequest);
 
-                executorService.execute(agentFetchTaskFactory.createFetchTask(fetchCommand.getFetchId(), targetRequest));
+                AgentFetchTask fetchTask = agentFetchTaskFactory.createFetchTask(fetchCommand.getFetchId(), targetRequest);
+                System.out.println("fetchTask = " + fetchTask);
+                executorService.execute(fetchTask);
 
 
             } catch (Exception e) {

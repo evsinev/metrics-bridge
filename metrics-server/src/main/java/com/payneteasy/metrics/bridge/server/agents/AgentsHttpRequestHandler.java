@@ -17,6 +17,7 @@ import com.payneteasy.metrics.bridge.agent.api.polling.messages.AgentPollingResp
 import com.payneteasy.metrics.bridge.server.prometheus.ITargetFinder;
 import com.payneteasy.metrics.bridge.server.prometheus.TargetResponse;
 import com.payneteasy.metrics.bridge.server.prometheus.TargetResponseHeader;
+import com.payneteasy.metrics.bridge.server.util.Strings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ public class AgentsHttpRequestHandler implements IHttpRequestHandler {
 
     private HttpResponse processPoll(HttpRequest aHttpRequest) {
         try {
-            String               remoteIpAddress = aHttpRequest.getRemoteAddress().getAddress().getHostAddress();
+            String               remoteIpAddress = getRemoteAddress(aHttpRequest);
             String               json            = aHttpRequest.getBody().asString(UTF_8);
             AgentPollingRequest  agentRequest    = gson.fromJson(json, AgentPollingRequest.class);
             AgentPollingResponse agentResponse   = agentPollingService.poll(remoteIpAddress, agentRequest);
@@ -111,6 +112,11 @@ public class AgentsHttpRequestHandler implements IHttpRequestHandler {
         } catch (Exception e) {
             return createPollError(AgentPollingProblemType.UNKNOWN, e.getMessage(), e);
         }
+    }
+
+    private String getRemoteAddress(HttpRequest aHttpRequest) {
+        String realIp = aHttpRequest.getHeaders().getString("X-Real-Ip");
+        return Strings.isEmpty(realIp) ? aHttpRequest.getRemoteAddress().getAddress().getHostAddress() : realIp;
     }
 
     private HttpResponse createPollError(AgentPollingProblemType aType, String aMessage, Exception e) {

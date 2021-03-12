@@ -24,12 +24,19 @@ public class MetricsServerApplication {
     public static void main(String[] args) {
 //        System.setProperty("java.util.logging.config.file", "src/main/resources/logging.properties");
 
-//        if (System.getProperty("java.util.logging.SimpleFormatter.format") == null) {
-//            System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
-//        }
+        if (System.getProperty("java.util.logging.SimpleFormatter.format") == null) {
+            System.setProperty("java.util.logging.SimpleFormatter.format", "[%1$tF %1$tT] [%4$-7s] %5$s %n");
+        }
+
 
         IServerConfig            startupConfig = getStartupParameters(IServerConfig.class);
         MetricsServerApplication app           = new MetricsServerApplication();
+
+//        LOG.info("Starting", l -> l
+//                .arg("name" , args[0])
+//                .arg("name2", startupConfig.getAgentWebContextServerPort())
+//                .tree("obj" , startupConfig)
+//        );
 
         try {
             app.start(startupConfig);

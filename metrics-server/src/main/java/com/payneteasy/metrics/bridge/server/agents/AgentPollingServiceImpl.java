@@ -21,7 +21,7 @@ public class AgentPollingServiceImpl {
 
     public AgentPollingResponse poll(String aRemoteIpAddress, AgentPollingRequest aRequest) throws AgentPollingException {
         try {
-            TargetRequest targetRequest = queue.poll(aRemoteIpAddress, 60_000);
+            TargetRequest targetRequest = queue.poll(aRemoteIpAddress, agentPollTimeMs - 5_000);
 
             AgentFetchMetricsCommand fetchCommand;
             if(targetRequest != null) {

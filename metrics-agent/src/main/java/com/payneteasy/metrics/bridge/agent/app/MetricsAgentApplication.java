@@ -52,6 +52,7 @@ public class MetricsAgentApplication {
         );
 
         thread.start();
+        System.out.println("Thread started");
     }
 
 

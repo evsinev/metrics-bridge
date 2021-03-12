@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -23,5 +24,16 @@ public class TargetResponse {
             ret.add(new HttpResponseHeader(header.getName(), header.getValue()));
         }
         return ret;
+    }
+
+    @Override
+    public String toString() {
+        return "TargetResponse{" +
+                "targetRequestId='" + targetRequestId + '\'' +
+                ", status=" + status +
+                ", reasonPhrase='" + reasonPhrase + '\'' +
+                ", headers=" + headers +
+                ", body.length=" + (body != null ? body.length : "<null>") +
+                '}';
     }
 }

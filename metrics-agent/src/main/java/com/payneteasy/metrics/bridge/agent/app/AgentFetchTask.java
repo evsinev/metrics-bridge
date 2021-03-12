@@ -1,5 +1,6 @@
 package com.payneteasy.metrics.bridge.agent.app;
 
+import com.payneteasy.http.client.api.HttpResponse;
 import com.payneteasy.http.client.api.IHttpClient;
 import com.payneteasy.metrics.bridge.agent.app.fetch.ITargetFetchClient;
 import com.payneteasy.metrics.bridge.agent.app.fetch.TargetFetchRequest;
@@ -22,15 +23,18 @@ public class AgentFetchTask implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println("Fetching from target " + targetRequest);
             TargetFetchResponse response = targetClient.fetchFromTarget(targetRequest);
 
-            fluentClient(serverClient)
-                .url(serverUploadUrl + "/" + fetchId)
-                .body(response.getBody())
-                .headers(response.getHeaders())
-                .header("X-Target-Status-Code", response.getStatusCode())
-                .header("X-Target-Reason-Phrase", response.getReasonPhrase())
-                .doPost();
+            HttpResponse httpResponse = fluentClient(serverClient)
+                    .url(serverUploadUrl + "/" + fetchId)
+                    .body(response.getBody())
+                    .headers(response.getHeaders())
+                    .header("X-Target-Status-Code", response.getStatusCode())
+                    .header("X-Target-Reason-Phrase", response.getReasonPhrase())
+                    .doPost();
+
+            System.out.println("httpResponse = " + httpResponse);
 
         } catch (Exception e) {
             e.printStackTrace();
