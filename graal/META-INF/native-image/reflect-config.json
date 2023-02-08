@@ -1,13 +1,48 @@
 [
-{
-  "name":"com.payneteasy.metrics.bridge.agent.app.IAgentConfig",
-  "allPublicMethods":true
-},
-
-
-{
-  "name":"com.payneteasy.metrics.bridge.agent.api.polling.exception.ProblemDetails",
-  "allPublicFields":true,
-  "unsafeAllocated": true
-}
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.app.IAgentConfig",
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.exception.ProblemDetails",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.exception.AgentPollingException",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.exception.AgentPollingProblemType",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.messages.AgentPollingRequest",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.messages.AgentPollingResponse",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.model.AgentFetchMetricsCommand",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  },
+  {
+    "name": "com.payneteasy.metrics.bridge.agent.api.polling.model.AgentSettings",
+    "allPublicFields": true,
+    "allDeclaredFields" : true,
+    "unsafeAllocated": true
+  }
 ]
