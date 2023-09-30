@@ -5,10 +5,15 @@ import com.payneteasy.metrics.bridge.agent.api.polling.messages.AgentPollingResp
 import com.payneteasy.metrics.bridge.agent.api.polling.model.AgentFetchMetricsCommand;
 import com.payneteasy.metrics.bridge.agent.app.client.polling.AgentPollingClient;
 import com.payneteasy.metrics.bridge.agent.app.fetch.TargetFetchRequest;
+import com.payneteasy.metrics.bridge.agent.app.log.MiniLogger;
 
 import java.util.concurrent.ExecutorService;
 
+import static com.payneteasy.metrics.bridge.agent.app.log.MiniLoggerFactory.getMiniLogger;
+
 public class AgentLongPollingThread extends Thread {
+
+    private static final MiniLogger LOG = getMiniLogger( AgentLongPollingThread.class );
 
     private final AgentPollingClient    client;
     private final String                agentId;
@@ -30,25 +35,25 @@ public class AgentLongPollingThread extends Thread {
             try {
                 AgentPollingResponse     response     = client.poll(new AgentPollingRequest(System.currentTimeMillis(), agentId, longPollingTimeoutMs));
 
-                System.out.println("response = " + response);
+                LOG.info("response = " + response);
 
                 AgentFetchMetricsCommand fetchCommand = response.getFetchCommand();
-                System.out.println("fetchCommand = " + fetchCommand);
+                LOG.info("fetchCommand = " + fetchCommand);
 
                 if (fetchCommand == null) {
                     continue;
                 }
 
                 TargetFetchRequest targetRequest = new TargetFetchRequest(fetchCommand.getTargetTcpPort(), fetchCommand.getTargetConnectionTimeoutMs(), fetchCommand.getTargetReadTimeoutMs());
-                System.out.println("targetRequest = " + targetRequest);
+                LOG.info("targetRequest = " + targetRequest);
 
                 AgentFetchTask fetchTask = agentFetchTaskFactory.createFetchTask(fetchCommand.getFetchId(), targetRequest);
-                System.out.println("fetchTask = " + fetchTask);
+                LOG.info("fetchTask = " + fetchTask);
                 executorService.execute(fetchTask);
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Cannot process request", e);
                 sleepForError();
             }
 
@@ -57,9 +62,9 @@ public class AgentLongPollingThread extends Thread {
 
     private void sleepForError() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(3_000);
         } catch (InterruptedException e) {
-            System.out.println("Interrupted");
+            LOG.warn("Interrupted");
             Thread.currentThread().interrupt();
         }
     }

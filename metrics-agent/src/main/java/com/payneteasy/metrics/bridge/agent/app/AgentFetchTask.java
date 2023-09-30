@@ -5,12 +5,16 @@ import com.payneteasy.http.client.api.IHttpClient;
 import com.payneteasy.metrics.bridge.agent.app.fetch.ITargetFetchClient;
 import com.payneteasy.metrics.bridge.agent.app.fetch.TargetFetchRequest;
 import com.payneteasy.metrics.bridge.agent.app.fetch.TargetFetchResponse;
+import com.payneteasy.metrics.bridge.agent.app.log.MiniLogger;
 import lombok.Builder;
 
 import static com.payneteasy.metrics.bridge.agent.app.HttpFluentClient.fluentClient;
+import static com.payneteasy.metrics.bridge.agent.app.log.MiniLoggerFactory.getMiniLogger;
 
 @Builder
 public class AgentFetchTask implements Runnable {
+
+    private static final MiniLogger LOG = getMiniLogger( AgentFetchTask.class );
 
     private final String             fetchId;
     private final ITargetFetchClient targetClient;
@@ -19,11 +23,12 @@ public class AgentFetchTask implements Runnable {
     private final IHttpClient        serverClient;
     private final int                serverConnectionTimeoutMs;
     private final int                serverReadTimeoutMs;
+    private final String             bearerHeaderValue;
 
     @Override
     public void run() {
         try {
-            System.out.println("Fetching from target " + targetRequest);
+            LOG.info("Fetching from target " + targetRequest);
             TargetFetchResponse response = targetClient.fetchFromTarget(targetRequest);
 
             HttpResponse httpResponse = fluentClient(serverClient)
@@ -32,12 +37,13 @@ public class AgentFetchTask implements Runnable {
                     .headers(response.getHeaders())
                     .header("X-Target-Status-Code", response.getStatusCode())
                     .header("X-Target-Reason-Phrase", response.getReasonPhrase())
+                    .header("Authorization", bearerHeaderValue )
                     .doPost();
 
-            System.out.println("httpResponse = " + httpResponse);
+            LOG.info("httpResponse = " + httpResponse);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Cannot fetch task, fetchId = " + fetchId, e);
         }
 
     }

@@ -13,16 +13,18 @@ public class AgentFetchTaskFactory {
     private final int                serverConnectionTimeoutMs;
     private final int                serverReadTimeoutMs;
     private final ITargetFetchClient targetFetchClient;
+    private final String             bearerHeaderValue;
 
     public AgentFetchTask createFetchTask(String aFetchId, TargetFetchRequest aRequest) {
         return AgentFetchTask.builder()
-                .serverClient(serverClient)
-                .serverUploadUrl(serverUploadUrl)
-                .serverConnectionTimeoutMs(serverConnectionTimeoutMs)
-                .serverReadTimeoutMs(serverReadTimeoutMs)
-                .fetchId(aFetchId)
-                .targetClient(targetFetchClient)
-                .targetRequest(aRequest)
+                .serverClient               ( serverClient              )
+                .serverUploadUrl            ( serverUploadUrl           )
+                .serverConnectionTimeoutMs  ( serverConnectionTimeoutMs )
+                .serverReadTimeoutMs        ( serverReadTimeoutMs       )
+                .fetchId                    ( aFetchId                  )
+                .targetClient               ( targetFetchClient         )
+                .targetRequest              ( aRequest                  )
+                .bearerHeaderValue          ( bearerHeaderValue         )
                 .build();
     }
 }

@@ -17,7 +17,14 @@ public class AgentPollingClient implements IAgentPollingService {
 
     private final JsonMethodInvoker<AgentPollingRequest, AgentPollingResponse, AgentPollingException> methodClient;
 
-    public AgentPollingClient(String aBaseUrl, IHttpClient aHttpClient, String aClientId, int aDefaultConnectionTimeoutMs, int aDefaultReadTimeoutMs, Gson gson) {
+    public AgentPollingClient(String aBaseUrl
+            , IHttpClient aHttpClient
+            , String aClientId
+            , int aDefaultConnectionTimeoutMs
+            , int aDefaultReadTimeoutMs
+            , Gson gson
+            , String aAccessToken
+    ) {
 
         parameters = HttpRequestParameters.builder()
                 .timeouts(new HttpTimeouts(aDefaultConnectionTimeoutMs, aDefaultReadTimeoutMs))
@@ -29,6 +36,7 @@ public class AgentPollingClient implements IAgentPollingService {
                 , aBaseUrl + "/poll/" + aClientId
                 , AgentPollingResponse.class
                 , new AgentPollingExceptionMapper(gson)
+                , aAccessToken
         );
     }
 

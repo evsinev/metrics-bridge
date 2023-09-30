@@ -3,11 +3,11 @@ package com.payneteasy.metrics.bridge.server;
 
 import com.payneteasy.http.server.HttpServer;
 import com.payneteasy.http.server.log.HttpLoggerJul;
-import com.payneteasy.http.server.log.HttpLoggerSystemOut;
 import com.payneteasy.http.server.log.IHttpLogger;
 import com.payneteasy.metrics.bridge.server.agents.AgentPollingServiceImpl;
 import com.payneteasy.metrics.bridge.server.agents.AgentsHttpRequestHandler;
 import com.payneteasy.metrics.bridge.server.agents.TargetRequestSenderAgentImpl;
+import com.payneteasy.metrics.bridge.server.log.HttpLoggerImpl;
 import com.payneteasy.metrics.bridge.server.prometheus.*;
 import com.payneteasy.metrics.bridge.server.queue.TargetQueue;
 
@@ -70,7 +70,7 @@ public class MetricsServerApplication {
     private HttpServer createAgentsWebServer(IServerConfig aConfig, AgentPollingServiceImpl aAgentService, ITargetFinder targetFinder) throws IOException {
         return new HttpServer(
                 new InetSocketAddress(aConfig.getAgentWebServerPort())
-                , new HttpLoggerSystemOut()
+                , new HttpLoggerImpl("AgentWebServer")
                 , Executors.newCachedThreadPool()
                 , new AgentsHttpRequestHandler(aAgentService, targetFinder, aConfig.getAgentWebContextServerPort())
                 , 10_000
@@ -80,7 +80,7 @@ public class MetricsServerApplication {
     private HttpServer createPrometheusWebServer(IServerConfig aConfig, ITargetFinder targetFinder) throws IOException {
         return new HttpServer(
                 new InetSocketAddress(aConfig.getPrometheusWebServerPort())
-                , new HttpLoggerJul("com.payneteasy.metrics.bridge.server.prometheus")
+                , new HttpLoggerImpl("PrometheusWebServer")
                 , Executors.newCachedThreadPool()
                 , new PrometheusHttpRequestHandler(targetFinder)
                 , 10_000

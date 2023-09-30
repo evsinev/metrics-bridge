@@ -45,7 +45,13 @@ public class AgentPollingExceptionMapper implements IExceptionMethodMapper<Agent
             return Optional.empty();
         }
 
-        ProblemDetails problem = gson.fromJson(new String(aResponse.getBody(), StandardCharsets.UTF_8), ProblemDetails.class);
+        String body = new String(aResponse.getBody(), StandardCharsets.UTF_8);
+
+        if (!body.startsWith("{")) {
+            return Optional.of(new AgentPollingException(BAD_RESPONSE_CODE, body));
+        }
+
+        ProblemDetails problem = gson.fromJson(body, ProblemDetails.class);
 
         AgentPollingProblemType type;
         try {

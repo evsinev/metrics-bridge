@@ -29,7 +29,7 @@ public class AgentPollingClientTest {
         Gson           gson       = new Gson();
 
         IAgentPollingService pollingService = new AgentPollingClient(
-                "http://localhost:1234/metrics-bridge", httpClient, "agent-01", 10, 11, gson
+                "http://localhost:1234/metrics-bridge", httpClient, "agent-01", 10, 11, gson, "access-token-123"
         );
 
         httpClient.setPendingResponse(new HttpResponse(200, "OK", Collections.emptyList(), "{'fetchCommand' : {'fetchId' : 'fetch-123', 'targetTcpPort' : 8080}}".getBytes(StandardCharsets.UTF_8)));
@@ -49,7 +49,7 @@ public class AgentPollingClientTest {
         Gson           gson       = new Gson();
 
         IAgentPollingService pollingService = new AgentPollingClient(
-                "http://localhost:1234/metrics-bridge", httpClient, "agent-01", 10, 11, gson
+                "http://localhost:1234/metrics-bridge", httpClient, "agent-01", 10, 11, gson, "access-token-123"
         );
 
         httpClient.setPendingResponse(new HttpResponse(500, "Server Error", Collections.emptyList(), "{'type' : 'FORBIDDEN'}".getBytes(StandardCharsets.UTF_8)));

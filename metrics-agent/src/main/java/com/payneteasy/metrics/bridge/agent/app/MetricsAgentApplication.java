@@ -4,12 +4,16 @@ import com.google.gson.Gson;
 import com.payneteasy.http.client.impl.HttpClientImpl;
 import com.payneteasy.metrics.bridge.agent.app.client.polling.AgentPollingClient;
 import com.payneteasy.metrics.bridge.agent.app.fetch.TargetFetchClient;
+import com.payneteasy.metrics.bridge.agent.app.log.MiniLogger;
 
 import java.util.concurrent.Executors;
 
+import static com.payneteasy.metrics.bridge.agent.app.log.MiniLoggerFactory.getMiniLogger;
 import static com.payneteasy.startup.parameters.StartupParametersFactory.getStartupParameters;
 
 public class MetricsAgentApplication {
+
+    private static final MiniLogger LOG = getMiniLogger( MetricsAgentApplication.class );
 
     private AgentLongPollingThread thread;
 
@@ -33,6 +37,7 @@ public class MetricsAgentApplication {
                 , aConfig.getServerReadTimeoutMs()
                 , aConfig.getPollingTimeoutMs()
                 , new Gson()
+                , aConfig.getAgentAccessToken()
         );
 
         AgentFetchTaskFactory factory = AgentFetchTaskFactory.builder()
@@ -41,6 +46,7 @@ public class MetricsAgentApplication {
                 .serverReadTimeoutMs(aConfig.getServerReadTimeoutMs())
                 .serverUploadUrl(aConfig.getServerBaseUrl() + "/upload")
                 .targetFetchClient(new TargetFetchClient(httpClient))
+                .bearerHeaderValue("Bearer " + aConfig.getAgentAccessToken())
                 .build();
 
         thread = new AgentLongPollingThread(
@@ -51,8 +57,9 @@ public class MetricsAgentApplication {
                 , factory
         );
 
+        thread.setName("agent-long-polling");
         thread.start();
-        System.out.println("Thread started");
+        LOG.info("Thread started");
     }
 
 

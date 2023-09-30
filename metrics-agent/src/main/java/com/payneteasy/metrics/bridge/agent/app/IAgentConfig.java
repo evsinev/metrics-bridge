@@ -10,6 +10,9 @@ public interface IAgentConfig {
     @AStartupParameter(name = "AGENT_ID", value = "agent-01")
     String getAgentId();
 
+    @AStartupParameter(name = "AGENT_ACCESS_TOKEN", value = "agent-01-access-token")
+    String getAgentAccessToken();
+
     @AStartupParameter(name = "POLLING_TIMEOUT_MS", value = "60000")
     int getPollingTimeoutMs();
 

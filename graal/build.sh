@@ -5,6 +5,6 @@ native-image \
   --allow-incomplete-classpath \
   --no-fallback  \
   -H:ConfigurationFileDirectories=META-INF/native-image \
-  --enable-url-protocols=http \
+  --enable-url-protocols=http,https \
   -jar ../metrics-agent/target/metrics-agent-1.0-SNAPSHOT.jar
 
