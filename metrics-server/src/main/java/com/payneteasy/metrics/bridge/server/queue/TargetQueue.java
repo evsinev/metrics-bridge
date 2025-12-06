@@ -49,6 +49,10 @@ public class TargetQueue<T> {
 
     public void add(String aRequestId, T aResponse) {
         LOG.debug("Adding ...", "queue", queueName, "request-id", aRequestId, "value", aResponse);
-        getQueue(aRequestId).add(aResponse);
+        try {
+            getQueue(aRequestId).add(aResponse);
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot add request " + aRequestId + " to queue " + queueName, e);
+        }
     }
 }

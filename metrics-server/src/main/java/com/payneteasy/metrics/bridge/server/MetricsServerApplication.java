@@ -7,6 +7,7 @@ import com.payneteasy.http.server.log.IHttpLogger;
 import com.payneteasy.metrics.bridge.server.agents.AgentPollingServiceImpl;
 import com.payneteasy.metrics.bridge.server.agents.AgentsHttpRequestHandler;
 import com.payneteasy.metrics.bridge.server.agents.TargetRequestSenderAgentImpl;
+import com.payneteasy.metrics.bridge.server.http.HttpGzipHandlerWrapper;
 import com.payneteasy.metrics.bridge.server.log.HttpLoggerImpl;
 import com.payneteasy.metrics.bridge.server.prometheus.*;
 import com.payneteasy.metrics.bridge.server.queue.TargetQueue;
@@ -82,7 +83,7 @@ public class MetricsServerApplication {
                 new InetSocketAddress(aConfig.getPrometheusWebServerPort())
                 , new HttpLoggerImpl("PrometheusWebServer")
                 , Executors.newCachedThreadPool()
-                , new PrometheusHttpRequestHandler(targetFinder)
+                , new HttpGzipHandlerWrapper(new PrometheusHttpRequestHandler(targetFinder))
                 , 10_000
         );
     }
